@@ -1,0 +1,97 @@
+{
+  "config": {
+    "title": "Curso GeoServer Profesional",
+    "subtitle": "Visor de Servicios OGC",
+    "geoserverUrl": "http://localhost:8080/geoserver",
+    "defaultCenter": [-65.0, -16.5],
+    "defaultZoom": 6,
+    "projection": "EPSG:4326"
+  },
+  "basemaps": [
+    {
+      "id": "osm",
+      "name": "OpenStreetMap",
+      "type": "OSM",
+      "visible": true
+    },
+    {
+      "id": "satelital",
+      "name": "Satelital (Esri)",
+      "type": "XYZ",
+      "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "visible": false
+    }
+  ],
+  "layers": [
+    {
+      "id": "departamentos",
+      "name": "Departamentos de Bolivia",
+      "description": "División político-administrativa de primer nivel. Incluye los 9 departamentos del Estado Plurinacional de Bolivia.",
+      "type": "WMS",
+      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
+      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
+      "wmsLayer": "bolivia:departamentos",
+      "wfsLayer": "bolivia:departamentos",
+      "visible": true,
+      "opacity": 0.85,
+      "downloadEnabled": true,
+      "color": "#F4A021"
+    },
+    {
+      "id": "municipios",
+      "name": "Municipios de Bolivia",
+      "description": "División político-administrativa de segundo nivel. Municipios agrupados por departamento.",
+      "type": "WMS",
+      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
+      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
+      "wmsLayer": "bolivia:municipios",
+      "wfsLayer": "bolivia:municipios",
+      "visible": false,
+      "opacity": 0.8,
+      "downloadEnabled": true,
+      "color": "#4FC3F7"
+    },
+    {
+      "id": "hidrografia",
+      "name": "Hidrografía",
+      "description": "Red hidrográfica principal. Ríos, lagos y cuencas del territorio boliviano.",
+      "type": "WMS",
+      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
+      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
+      "wmsLayer": "bolivia:hidrografia",
+      "wfsLayer": "bolivia:hidrografia",
+      "visible": false,
+      "opacity": 0.9,
+      "downloadEnabled": true,
+      "color": "#29B6F6"
+    },
+    {
+      "id": "vialidad",
+      "name": "Red Vial Nacional",
+      "description": "Carreteras, caminos principales y secundarios. Fuente: GeoBolivia.",
+      "type": "WMS",
+      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
+      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
+      "wmsLayer": "bolivia:vialidad",
+      "wfsLayer": "bolivia:vialidad",
+      "visible": false,
+      "opacity": 0.85,
+      "downloadEnabled": true,
+      "color": "#A5D6A7"
+    },
+    {
+      "id": "areas_protegidas",
+      "name": "Áreas Protegidas",
+      "description": "Sistema Nacional de Áreas Protegidas (SNAP). Parques nacionales, reservas y santuarios.",
+      "type": "WMS",
+      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
+      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
+      "wmsLayer": "bolivia:areas_protegidas",
+      "wfsLayer": "bolivia:areas_protegidas",
+      "visible": false,
+      "opacity": 0.75,
+      "downloadEnabled": true,
+      "color": "#81C784"
+    }
+  ]
+}
