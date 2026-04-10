@@ -332,7 +332,8 @@ function clearImport() { STATE.importLayer.getSource().clear(); showToast('Capa 
 /* ============================================================ GetFeatureInfo */
 function initGetFeatureInfo() {
   const popup=document.getElementById('popup');
-  const popupOverlay=new ol.Overlay({ element:popup, autoPan:{animation:{duration:250}} });
+  //const popupOverlay=new ol.Overlay({ element:popup, autoPan:{animation:{duration:250}} });
+  const popupOverlay = new ol.Overlay({ element: popup, autoPan: false });
   STATE.map.addOverlay(popupOverlay);
 
   document.getElementById('popup-closer').addEventListener('click', ()=>{ popupOverlay.setPosition(undefined); popup.classList.remove('visible'); });
