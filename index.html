@@ -1,165 +1,233 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Visor GeoServer Profesional — Servicios OGC WMS/WFS — ARTECLAB" />
-  <title>Curso GeoServer Profesional</title>
-
-  <!-- OpenLayers 9 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@9.2.4/ol.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Curso GeoServer Profesional — ARTECLAB</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@9.2.4/ol.css"/>
   <script src="https://cdn.jsdelivr.net/npm/ol@9.2.4/dist/ol.js"></script>
-
-  <!-- Estilos propios -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-  <!-- =========================================================
-       BANNER SUPERIOR
-       ========================================================= -->
-  <header id="banner" role="banner">
-    <div class="banner-brand">
-      <!-- Logo / icono -->
-      <div class="banner-logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#F4A021" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/>
-          <path d="M8 12a18 18 0 001 5"/>
-        </svg>
-      </div>
-      <div class="banner-titles">
-        <span class="banner-title">Curso <span>GeoServer</span> Profesional</span>
-        <span class="banner-subtitle">Servicios OGC &nbsp;·&nbsp; WMS &amp; WFS &nbsp;·&nbsp; Bolivia</span>
-      </div>
+<!-- ═══════════════════════════════════════════════════════════
+     BANNER
+═══════════════════════════════════════════════════════════ -->
+<header id="banner">
+  <div class="banner-brand">
+    <div class="banner-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#F4A021" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/>
+      </svg>
     </div>
-
-    <div class="banner-meta">
-      <span class="banner-badge">ARTECLAB</span>
+    <div class="banner-titles">
+      <span class="banner-title">Curso <span>GeoServer</span> Profesional</span>
+      <span class="banner-subtitle">Servicios OGC &nbsp;·&nbsp; WMS &amp; WFS &nbsp;·&nbsp; Bolivia</span>
     </div>
-  </header>
+  </div>
+  <div class="banner-meta">
+    <span class="banner-badge">ARTECLAB</span>
+  </div>
+</header>
 
-  <!-- =========================================================
-       LAYOUT PRINCIPAL
-       ========================================================= -->
-  <div id="app">
+<!-- ═══════════════════════════════════════════════════════════
+     LAYOUT
+═══════════════════════════════════════════════════════════ -->
+<div id="app">
 
-    <!-- =====================================================
-         SIDEBAR — Panel de capas
-         ===================================================== -->
-    <aside id="sidebar" role="complementary" aria-label="Panel de capas">
+  <!-- ─── SIDEBAR IZQUIERDO ─── -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-header-row"><span class="sidebar-title">Mapa base</span></div>
+      <div class="basemap-selector" id="basemap-selector"></div>
+    </div>
+    <div class="sidebar-header" style="padding:10px 16px 8px;">
+      <span class="sidebar-title">Capas WMS</span>
+    </div>
+    <div class="layers-container" id="layers-container"></div>
+  </aside>
 
-      <!-- Cabecera del panel -->
-      <div class="sidebar-header">
-        <div class="sidebar-header-row">
-          <span class="sidebar-title">Mapa base</span>
+  <!-- ─── CONTENEDOR MAPA ─── -->
+  <main id="map-container">
+    <div id="sidebar-overlay"></div>
+    <div id="map"></div>
+
+    <!-- Toggle sidebar -->
+    <button id="sidebar-toggle" title="Panel de capas">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="2" y1="4" x2="14" y2="4"/><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="12" x2="8" y2="12"/>
+      </svg>
+    </button>
+
+    <!-- ─── TOOLBAR DERECHO (herramientas) ─── -->
+    <div id="toolbar">
+
+      <!-- Zoom -->
+      <div class="toolbar-group">
+        <button class="ctrl-btn" id="btn-zoom-in" title="Acercar">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="7" cy="7" r="5.5"/><line x1="11" y1="11" x2="14.5" y2="14.5"/>
+            <line x1="7" y1="4.5" x2="7" y2="9.5"/><line x1="4.5" y1="7" x2="9.5" y2="7"/>
+          </svg>
+        </button>
+        <button class="ctrl-btn" id="btn-zoom-out" title="Alejar">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="7" cy="7" r="5.5"/><line x1="11" y1="11" x2="14.5" y2="14.5"/>
+            <line x1="4.5" y1="7" x2="9.5" y2="7"/>
+          </svg>
+        </button>
+        <button class="ctrl-btn" id="btn-full-extent" title="Extensión Bolivia">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/>
+            <rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- ─── Medición ─── -->
+      <div class="toolbar-section">
+        <div class="toolbar-section-header">
+          <span class="toolbar-section-label">Medición</span>
+          <svg class="section-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" width="10" height="10"><path d="M2 3l3 3 3-3"/></svg>
         </div>
-        <!-- Selector de mapa base (se llena dinámicamente) -->
-        <div class="basemap-selector" id="basemap-selector"></div>
+        <div class="toolbar-section-body">
+          <button class="tool-btn" id="btn-measure-distance" title="Medir distancia">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="2" y1="14" x2="14" y2="2"/><line x1="2" y1="11" x2="2" y2="14"/><line x1="5" y1="14" x2="2" y2="14"/>
+              <line x1="11" y1="2" x2="14" y2="2"/><line x1="14" y1="2" x2="14" y2="5"/>
+            </svg>
+            <span>Distancia</span>
+          </button>
+          <button class="tool-btn" id="btn-measure-area" title="Medir área">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 13L6 3l4 7 3-3 1 6H2z"/>
+            </svg>
+            <span>Área</span>
+          </button>
+          <button class="tool-btn tool-btn-action" id="btn-measure-clear" title="Eliminar mediciones">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
+            </svg>
+            <span>Limpiar</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Sección de capas -->
-      <div class="sidebar-header" style="padding-top:10px;padding-bottom:10px;flex-shrink:0;">
-        <span class="sidebar-title">Capas WMS</span>
+      <div class="toolbar-divider"></div>
+
+      <!-- ─── Dibujo ─── -->
+      <div class="toolbar-section">
+        <div class="toolbar-section-header">
+          <span class="toolbar-section-label">Dibujo</span>
+          <svg class="section-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" width="10" height="10"><path d="M2 3l3 3 3-3"/></svg>
+        </div>
+        <div class="toolbar-section-body">
+          <button class="tool-btn" id="btn-draw-point" title="Dibujar punto">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="3"/><circle cx="8" cy="8" r="6.5" stroke-dasharray="3 3"/>
+            </svg>
+            <span>Punto</span>
+          </button>
+          <button class="tool-btn" id="btn-draw-line" title="Dibujar línea">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <polyline points="2,13 6,5 10,9 14,3"/>
+              <circle cx="2" cy="13" r="1.5" fill="currentColor"/><circle cx="14" cy="3" r="1.5" fill="currentColor"/>
+            </svg>
+            <span>Línea</span>
+          </button>
+          <button class="tool-btn" id="btn-draw-polygon" title="Dibujar polígono">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+              <polygon points="8,2 14,6 12,13 4,13 2,6"/>
+            </svg>
+            <span>Polígono</span>
+          </button>
+          <button class="tool-btn" id="btn-draw-edit" title="Editar vértices">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M11 2l3 3-8 8H3v-3L11 2z"/>
+            </svg>
+            <span>Editar</span>
+          </button>
+          <button class="tool-btn" id="btn-draw-label" title="Etiquetar figura">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M3 12V4h10v8H3zM6 4v8M10 7H6"/>
+            </svg>
+            <span>Etiqueta</span>
+          </button>
+          <button class="tool-btn" id="btn-draw-undo" title="Deshacer">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M3 6H9a4 4 0 010 8H5"/><polyline points="3,3 3,6 6,6"/>
+            </svg>
+            <span>Deshacer</span>
+          </button>
+          <button class="tool-btn" id="btn-draw-export" title="Exportar GeoJSON">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M8 2v9"/><polyline points="5,8 8,11 11,8"/>
+              <path d="M3 13h10"/>
+            </svg>
+            <span>Exportar</span>
+          </button>
+          <button class="tool-btn tool-btn-action" id="btn-draw-clear" title="Eliminar dibujos">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <polyline points="2,4 4,4 14,4"/><path d="M5 4V3h6v1M6 7v5M10 7v5"/>
+              <path d="M3 4l1 10h8l1-10"/>
+            </svg>
+            <span>Limpiar</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Lista de capas (se llena dinámicamente desde data.json) -->
-      <div class="layers-container" id="layers-container" role="list"
-           aria-label="Capas disponibles">
-        <!-- Las tarjetas de capa se generan en scripts.js -->
+      <div class="toolbar-divider"></div>
+
+      <!-- ─── Importar ─── -->
+      <div class="toolbar-section">
+        <div class="toolbar-section-header">
+          <span class="toolbar-section-label">Importar</span>
+          <svg class="section-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" width="10" height="10"><path d="M2 3l3 3 3-3"/></svg>
+        </div>
+        <div class="toolbar-section-body">
+          <button class="tool-btn" id="btn-import-file" title="Importar KML o GeoJSON">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M8 11V2"/><polyline points="5,5 8,2 11,5"/>
+              <path d="M3 13h10"/>
+            </svg>
+            <span>Abrir</span>
+          </button>
+          <button class="tool-btn tool-btn-action" id="btn-import-clear" title="Eliminar capa importada">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
+            </svg>
+            <span>Limpiar</span>
+          </button>
+          <div class="import-hint">o arrastra KML / GeoJSON sobre el mapa</div>
+        </div>
       </div>
 
-    </aside>
+      <input type="file" id="import-file-input" accept=".geojson,.json,.kml" style="display:none"/>
+    </div><!-- /#toolbar -->
 
-    <!-- =====================================================
-         CONTENEDOR DEL MAPA
-         ===================================================== -->
-    <main id="map-container" role="main">
-
-      <!-- Overlay para cerrar sidebar en móvil -->
-      <div id="sidebar-overlay" aria-hidden="true"></div>
-
-      <!-- Mapa OpenLayers -->
-      <div id="map" role="application" aria-label="Mapa interactivo"></div>
-
-      <!-- Botón toggle sidebar (sobre el mapa) -->
-      <button id="sidebar-toggle" title="Mostrar/ocultar panel de capas"
-              aria-label="Mostrar/ocultar panel de capas">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-             stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-          <line x1="2" y1="4" x2="14" y2="4"/>
-          <line x1="2" y1="8" x2="14" y2="8"/>
-          <line x1="2" y1="12" x2="8" y2="12"/>
+    <!-- ─── POPUP GetFeatureInfo ─── -->
+    <div id="popup" class="ol-popup">
+      <button id="popup-closer" class="ol-popup-closer" title="Cerrar">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
         </svg>
       </button>
+      <div id="popup-content"></div>
+    </div>
 
-      <!-- ================================================
-           Controles de mapa (zoom, extent)
-           ================================================ -->
-      <div class="map-controls" role="toolbar" aria-label="Controles del mapa">
+    <!-- Footer coordenadas -->
+    <div id="map-footer">
+      <span class="footer-coords" id="footer-coords">Lon: <span>—</span> &nbsp; Lat: <span>—</span></span>
+      <span class="footer-crs">WGS 84 / EPSG:4326</span>
+    </div>
+  </main>
 
-        <!-- Zoom In -->
-        <button class="ctrl-btn" id="btn-zoom-in"
-                title="Acercar" aria-label="Acercar">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
-               stroke-width="1.8" stroke-linecap="round">
-            <circle cx="7" cy="7" r="5.5"/>
-            <line x1="11" y1="11" x2="14.5" y2="14.5"/>
-            <line x1="7" y1="4.5" x2="7" y2="9.5"/>
-            <line x1="4.5" y1="7" x2="9.5" y2="7"/>
-          </svg>
-        </button>
+</div>
 
-        <!-- Zoom Out -->
-        <button class="ctrl-btn" id="btn-zoom-out"
-                title="Alejar" aria-label="Alejar">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
-               stroke-width="1.8" stroke-linecap="round">
-            <circle cx="7" cy="7" r="5.5"/>
-            <line x1="11" y1="11" x2="14.5" y2="14.5"/>
-            <line x1="4.5" y1="7" x2="9.5" y2="7"/>
-          </svg>
-        </button>
-
-        <!-- Divisor -->
-        <div class="ctrl-divider"></div>
-
-        <!-- Zoom a extensión inicial -->
-        <button class="ctrl-btn" id="btn-full-extent"
-                title="Volver a Bolivia" aria-label="Volver a extensión inicial">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
-               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="5" height="5" rx="1"/>
-            <rect x="9" y="2" width="5" height="5" rx="1"/>
-            <rect x="2" y="9" width="5" height="5" rx="1"/>
-            <rect x="9" y="9" width="5" height="5" rx="1"/>
-          </svg>
-        </button>
-
-      </div>
-
-      <!-- ================================================
-           Footer del mapa — coordenadas y CRS
-           ================================================ -->
-      <div id="map-footer" role="status" aria-live="polite">
-        <span class="footer-coords" id="footer-coords">
-          Lon: <span>—</span> &nbsp; Lat: <span>—</span>
-        </span>
-        <span class="footer-crs">WGS 84 / EPSG:4326</span>
-      </div>
-
-    </main>
-
-  </div><!-- /#app -->
-
-  <!-- =========================================================
-       Toast / Notificaciones
-       ========================================================= -->
-  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
-
-  <!-- Scripts propios -->
-  <script src="scripts.js"></script>
-
+<div id="toast-container"></div>
+<script src="scripts.js"></script>
 </body>
 </html>
