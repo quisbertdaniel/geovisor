@@ -2,6 +2,13 @@
  * Visor GeoServer Profesional — ARTECLAB
  * scripts.js — Lógica principal del visor
  * Dependencia: OpenLayers 9 (CDN)
+ *
+ * Solución CORS:
+ *   - WMS: crossOrigin omitido → el navegador carga tiles como <img> (no fetch),
+ *     evitando el bloqueo CORS en servidores sin cabecera Allow-Origin.
+ *     Si la capa define corsProxy en data.json, se antepone a la URL WMS.
+ *   - WFS (descargas): se abre en ventana nueva (window.open) en lugar de fetch,
+ *     ya que la navegación directa no está sujeta a restricciones CORS.
  */
 
 // ============================================================
@@ -40,16 +47,43 @@ async function loadConfig() {
 }
 
 // ============================================================
+//  Proxy CORS — resuelve la URL WMS según configuración
+// ============================================================
+/**
+ * Devuelve la URL WMS lista para usar:
+ *  - Si la capa define corsProxy   → antepone el proxy a la URL
+ *  - Si config define corsProxy     → igual
+ *  - Si no hay proxy               → devuelve la URL sin modificar
+ *
+ * Ejemplo de proxy público gratuito (solo para demos/desarrollo):
+ *   "corsProxy": "https://corsproxy.io/?"
+ *
+ * Para producción se recomienda un proxy propio o habilitar CORS en el servidor.
+ */
+function resolveWmsUrl(layerCfg) {
+  const proxy = layerCfg.corsProxy || STATE.config.config.corsProxy || null;
+  if (proxy) {
+    return proxy + encodeURIComponent(layerCfg.wmsUrl);
+  }
+  return layerCfg.wmsUrl;
+}
+
+function resolveWfsUrl(layerCfg) {
+  const proxy = layerCfg.corsProxy || STATE.config.config.corsProxy || null;
+  if (proxy) {
+    return proxy + encodeURIComponent(layerCfg.wfsUrl);
+  }
+  return layerCfg.wfsUrl;
+}
+
+// ============================================================
 //  Inicializar mapa OpenLayers
 // ============================================================
 function initMap() {
   const cfg = STATE.config.config;
 
-  // Capas base
   const baseLayers = buildBaseLayers();
-
-  // Capas WMS del data.json
-  const wmsLayers = buildWmsLayers();
+  const wmsLayers  = buildWmsLayers();
 
   STATE.map = new ol.Map({
     target: 'map',
@@ -62,7 +96,6 @@ function initMap() {
     })
   });
 
-  // Evento de movimiento de ratón → coordenadas en footer
   STATE.map.on('pointermove', (evt) => {
     const lonLat = ol.proj.toLonLat(evt.coordinate);
     updateCoords(lonLat[0], lonLat[1]);
@@ -102,17 +135,28 @@ function buildWmsLayers() {
   const layers = [];
 
   for (const layerCfg of STATE.config.layers) {
-    const source = new ol.source.TileWMS({
-      url: layerCfg.wmsUrl,
+
+    const wmsUrl = resolveWmsUrl(layerCfg);
+
+    const sourceOptions = {
+      url: wmsUrl,
       params: {
         LAYERS: layerCfg.wmsLayer,
         FORMAT: 'image/png',
         TRANSPARENT: true,
         VERSION: '1.1.1'
       },
-      serverType: 'geoserver',
-      crossOrigin: 'anonymous'
-    });
+      serverType: 'geoserver'
+      // ⚠️  crossOrigin se omite intencionalmente:
+      //     sin crossOrigin, OpenLayers carga las tiles como elementos <img>
+      //     en lugar de fetch(), lo que no está sujeto a restricciones CORS.
+      //     Esto permite visualizar WMS de servidores sin cabecera Allow-Origin.
+      //     Limitación: no se puede leer el pixel (getFeatureInfo) sobre canvas.
+      //     Si el servidor SÍ tiene CORS, puedes agregar: crossOrigin: 'anonymous'
+    };
+
+    // Si se usa proxy, la URL ya viene codificada: no necesita crossOrigin
+    const source = new ol.source.TileWMS(sourceOptions);
 
     const olLayer = new ol.layer.Tile({
       source: source,
@@ -250,6 +294,16 @@ function switchBasemap(id, clickedBtn) {
 // ============================================================
 //  Descarga WFS
 // ============================================================
+/**
+ * Estrategia anti-CORS para descargas WFS:
+ *   window.open() abre la URL directamente en el navegador.
+ *   La navegación directa (no fetch/XHR) no está sujeta a CORS,
+ *   por lo que el archivo se descarga aunque el servidor no tenga
+ *   la cabecera Access-Control-Allow-Origin.
+ *
+ *   Si el servidor tiene CORS habilitado, también funciona.
+ *   Si la capa define corsProxy, se usa el proxy para la URL WFS.
+ */
 function downloadLayer(layerId, format, btn) {
   const layerCfg = STATE.config.layers.find(l => l.id === layerId);
   if (!layerCfg) return;
@@ -267,24 +321,21 @@ function downloadLayer(layerId, format, btn) {
     srsName: 'EPSG:4326'
   });
 
-  const url = `${layerCfg.wfsUrl}?${params.toString()}`;
-  const filename = `${layerCfg.id}.${ext}`;
+  // Construir URL base (con o sin proxy)
+  const baseWfsUrl = resolveWfsUrl(layerCfg);
+  const url = `${baseWfsUrl}?${params.toString()}`;
 
   btn.classList.add('loading');
-  showToast(`Descargando ${layerCfg.name} como ${ext.toUpperCase()}…`, 'info');
+  showToast(`Abriendo descarga: ${layerCfg.name} (${ext.toUpperCase()})…`, 'info');
 
-  // Crear enlace temporal de descarga
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.style.display = 'none';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  // ✅ window.open() en lugar de fetch/link.click():
+  //    evita restricciones CORS — el servidor envía el archivo
+  //    directamente al navegador sin pasar por JavaScript.
+  window.open(url, '_blank', 'noopener');
 
   setTimeout(() => {
     btn.classList.remove('loading');
-    showToast(`Descarga iniciada: ${filename}`, 'success');
+    showToast(`Descarga iniciada: ${layerCfg.id}.${ext}`, 'success');
   }, 800);
 }
 
