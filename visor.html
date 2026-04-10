@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visor GeoServer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+
+  <!-- Leaflet CSS y JS desde CDN -->
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
+
+  <style>
+    body { margin: 0; }
+    #mapa { width: 100vw; height: 100vh; }
+  </style>
+</head>
+<body>
+
+  <div id="mapa"></div>
+
+  <script>
+    // 1. Crear el mapa centrado en Sudamérica
+    var mapa = L.map('mapa').setView([-15, -60], 4);
+
+    // 2. Agregar mapa base de OpenStreetMap
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap - ARTECLAB'
+    }).addTo(mapa);
+
+    // 3. Agregar capa WMS de tu GeoServer
+    /*var capaWMS = L.tileLayer.wms(
+    'http://192.168.100.116:8080/geoserver/DB_DEPARTAMENTOS/wms', {
+        layers: 'DB_DEPARTAMENTOS:departamentos',
+        format: 'image/png',
+        transparent: true,
+        version: '1.1.1',
+        attribution: 'Datos: mi GeoServer'
+    }
+    ).addTo(mapa);*/
+
+    var departamentos = L.tileLayer.wms(
+    'http://192.168.100.116:8080/geoserver/DB_DEPARTAMENTOS/wms', {
+        layers: 'DB_DEPARTAMENTOS:departamentos',
+        format: 'image/png', transparent: true
+    });
+    var altiplano = L.tileLayer.wms(
+    'http://192.168.100.116:8080/geoserver/DB_DEPARTAMENTOS/wms', {
+        layers: 'DB_DEPARTAMENTOS:vista_departamentos_altiplano',
+        format: 'image/png', transparent: true
+    });
+    var red_vial = L.tileLayer.wms(
+    'http://192.168.100.116:8080/geoserver/DEPARTAMENTOS/wms', {
+        layers: 'DB_DEPARTAMENTOS:red_vial_fundamental_2021',
+        format: 'image/png', transparent: true
+    });
+
+    var overlays = {
+    "Bolivia": departamentos,
+    "Altiplano": altiplano,
+    "Red Vial": red_vial
+    };
+
+    L.control.layers(null, overlays).addTo(mapa);
+   
+
+    //GetFeatureInfo
+    // 4. GetFeatureInfo al hacer clic
+    mapa.on('click', function(e) {
+    var latlng = e.latlng;
+    var bounds = mapa.getBounds();
+    var size = mapa.getSize();
+    var point = mapa.latLngToContainerPoint(latlng);
+
+    var url = 'http://192.168.100.116:8080/geoserver/DEPARTAMENTOS/wms?'
+        + 'SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo'
+        + '&LAYERS=DB_DEPARTAMENTOS:vista_departamentos_altiplano'
+        + '&QUERY_LAYERS=DB_DEPARTAMENTOS:vista_departamentos_altiplano'
+        + '&INFO_FORMAT=application/json'
+        + '&SRS=EPSG:4326'
+        + '&WIDTH=' + size.x + '&HEIGHT=' + size.y
+        + '&BBOX=' + bounds.toBBoxString()
+        + '&X=' + Math.round(point.x)
+        + '&Y=' + Math.round(point.y);
+
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+        if (data.features && data.features.length > 0) {
+            var props = data.features[0].properties;
+            var html = '<b>' + (props.name || 'Sin nombre') + '</b><br>';
+            for (var key in props) {
+            if (key !== 'bbox') {
+                html += key + ': ' + props[key] + '<br>';
+            }
+            }
+            L.popup()
+            .setLatLng(latlng)
+            .setContent(html)
+            .openOn(mapa);
+        }
+        });
+    });
+
+
+  </script>
+
+</body>
+</html>
