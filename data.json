@@ -5,98 +5,102 @@
     "defaultCenter": [-65.0, -16.5],
     "defaultZoom": 6,
     "projection": "EPSG:4326",
-    "corsProxy": ""
+    "corsProxy": "https://corsproxy.io/?"
   },
   "basemaps": [
-    {
-      "id": "osm",
-      "name": "OpenStreetMap",
-      "type": "OSM",
-      "visible": true
-    },
-    {
-      "id": "satelital",
-      "name": "Satelital (Esri)",
-      "type": "XYZ",
+    { "id": "osm",      "name": "OpenStreetMap", "type": "OSM", "visible": true },
+    { "id": "satelital","name": "Satelital (Esri)", "type": "XYZ",
       "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      "visible": false
-    }
+      "visible": false }
   ],
   "layers": [
     {
       "id": "tierra_forestal",
       "name": "Tierras de Producción Forestal",
-      "description": "Tierras de producción forestal permanente según clasificación INRA. Fuente: geoserver.inra.gob.bo",
+      "description": "Tierras de producción forestal permanente según clasificación INRA.",
       "type": "WMS",
-      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/ows/wms",
-      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/ows/wfs",
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
       "wmsLayer": "sinacar:layer_tierra_de_produccion_forestal_permanente_tn91ll",
       "wfsLayer": "sinacar:layer_tierra_de_produccion_forestal_permanente_tn91ll",
-      "visible": true,
-      "opacity": 0.85,
-      "downloadEnabled": true,
-      "color": "#F4A021",
-      "corsProxy": ""
+      "visible": true, "opacity": 0.85, "downloadEnabled": true, "color": "#F4A021"
     },
     {
-      "id": "municipios",
-      "name": "Municipios de Bolivia",
-      "description": "División político-administrativa de segundo nivel. Municipios agrupados por departamento.",
+      "id": "erosion_hidrica",
+      "name": "Erosión Hídrica",
+      "description": "Mapa de erosión hídrica del territorio boliviano. Fuente: INRA SINACAR.",
       "type": "WMS",
-      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
-      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
-      "wmsLayer": "bolivia:municipios",
-      "wfsLayer": "bolivia:municipios",
-      "visible": false,
-      "opacity": 0.8,
-      "downloadEnabled": true,
-      "color": "#4FC3F7",
-      "corsProxy": ""
-    },
-    {
-      "id": "hidrografia",
-      "name": "Hidrografía",
-      "description": "Red hidrográfica principal. Ríos, lagos y cuencas del territorio boliviano.",
-      "type": "WMS",
-      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
-      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
-      "wmsLayer": "bolivia:hidrografia",
-      "wfsLayer": "bolivia:hidrografia",
-      "visible": false,
-      "opacity": 0.9,
-      "downloadEnabled": true,
-      "color": "#29B6F6",
-      "corsProxy": ""
-    },
-    {
-      "id": "vialidad",
-      "name": "Red Vial Nacional",
-      "description": "Carreteras, caminos principales y secundarios. Fuente: GeoBolivia.",
-      "type": "WMS",
-      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
-      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
-      "wmsLayer": "bolivia:vialidad",
-      "wfsLayer": "bolivia:vialidad",
-      "visible": false,
-      "opacity": 0.85,
-      "downloadEnabled": true,
-      "color": "#A5D6A7",
-      "corsProxy": ""
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
+      "wmsLayer": "sinacar:layer_erosion_hidrica_l5l31",
+      "wfsLayer": "sinacar:layer_erosion_hidrica_l5l31",
+      "visible": false, "opacity": 0.85, "downloadEnabled": true, "color": "#A1887F"
     },
     {
       "id": "areas_protegidas",
-      "name": "Áreas Protegidas",
-      "description": "Sistema Nacional de Áreas Protegidas (SNAP). Parques nacionales, reservas y santuarios.",
+      "name": "Áreas Protegidas Nacionales",
+      "description": "Áreas protegidas a nivel nacional. Sistema Nacional de Áreas Protegidas (SNAP). Fuente: INRA SINACAR.",
       "type": "WMS",
-      "wmsUrl": "http://localhost:8080/geoserver/bolivia/wms",
-      "wfsUrl": "http://localhost:8080/geoserver/bolivia/wfs",
-      "wmsLayer": "bolivia:areas_protegidas",
-      "wfsLayer": "bolivia:areas_protegidas",
-      "visible": false,
-      "opacity": 0.75,
-      "downloadEnabled": true,
-      "color": "#81C784",
-      "corsProxy": ""
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
+      "wmsLayer": "sinacar:layer_areas_protegidas_a_nivel_nacional_94l7ej",
+      "wfsLayer": "sinacar:layer_areas_protegidas_a_nivel_nacional_94l7ej",
+      "visible": false, "opacity": 0.85, "downloadEnabled": true, "color": "#66BB6A"
+    },
+    {
+      "id": "amenaza_sequia",
+      "name": "Amenaza de Sequía",
+      "description": "Zonas con amenaza de sequía en Bolivia. Fuente: INRA SINACAR.",
+      "type": "WMS",
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
+      "wmsLayer": "sinacar:layer_amenaza_de_sequia_nsjdr",
+      "wfsLayer": "sinacar:layer_amenaza_de_sequia_nsjdr",
+      "visible": false, "opacity": 0.85, "downloadEnabled": true, "color": "#FFA726"
+    },
+    {
+      "id": "amenaza_inundacion",
+      "name": "Amenaza de Inundación",
+      "description": "Zonas con amenaza de inundación en Bolivia. Fuente: INRA SINACAR.",
+      "type": "WMS",
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
+      "wmsLayer": "sinacar:layer_amenaza_de_inundacion_p5wxo",
+      "wfsLayer": "sinacar:layer_amenaza_de_inundacion_p5wxo",
+      "visible": false, "opacity": 0.85, "downloadEnabled": true, "color": "#29B6F6"
+    },
+    {
+      "id": "amenaza_incendios",
+      "name": "Amenaza de Incendios",
+      "description": "Zonas con amenaza de incendios forestales en Bolivia. Fuente: INRA SINACAR.",
+      "type": "WMS",
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
+      "wmsLayer": "sinacar:layer_amenaza_de_incendios_yfzbml",
+      "wfsLayer": "sinacar:layer_amenaza_de_incendios_yfzbml",
+      "visible": false, "opacity": 0.85, "downloadEnabled": true, "color": "#EF5350"
+    },
+    {
+      "id": "amenaza_helada",
+      "name": "Amenaza de Helada",
+      "description": "Zonas con amenaza de heladas en Bolivia. Fuente: INRA SINACAR.",
+      "type": "WMS",
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
+      "wmsLayer": "sinacar:layer_amenaza_de_helada_5gi7s",
+      "wfsLayer": "sinacar:layer_amenaza_de_helada_5gi7s",
+      "visible": false, "opacity": 0.85, "downloadEnabled": true, "color": "#B3E5FC"
+    },
+    {
+      "id": "amenaza_granizo",
+      "name": "Amenaza de Granizo",
+      "description": "Zonas con amenaza de granizo en Bolivia. Fuente: INRA SINACAR.",
+      "type": "WMS",
+      "wmsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wms",
+      "wfsUrl": "https://geoserver.inra.gob.bo/geoserver/sinacar/wfs",
+      "wmsLayer": "sinacar:layer_amenaza_de_granizo_a9imuh",
+      "wfsLayer": "sinacar:layer_amenaza_de_granizo_a9imuh",
+      "visible": false, "opacity": 0.85, "downloadEnabled": true, "color": "#CE93D8"
     }
   ]
 }
