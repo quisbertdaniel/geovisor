@@ -43,8 +43,8 @@
     ).addTo(mapa);*/
 
     var departamentos = L.tileLayer.wms(
-    'http://192.168.100.116:8080/geoserver/DB_DEPARTAMENTOS/wms', {
-        layers: 'DB_DEPARTAMENTOS:departamentos',
+    'https://geoserver.inra.gob.bo/geoserver/wms', {
+        layers: 'sinacar:layer_tierra_de_produccion_forestal_permanente_tn91ll',
         format: 'image/png', transparent: true
     });
     var altiplano = L.tileLayer.wms(
