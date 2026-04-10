@@ -34,8 +34,9 @@ function resolveUrl(url) {
   const proxy = STATE.config.config.corsProxy || '';
   return proxy ? proxy + encodeURIComponent(url) : url;
 }
-function resolveWmsUrl(lc) { return resolveUrl(lc.wmsUrl); }
-function resolveWfsUrl(lc) { return resolveUrl(lc.wfsUrl); }
+
+function resolveWmsUrl(lc) { return lc.wmsUrl; }
+function resolveWfsUrl(lc) { return lc.wfsUrl; }
 
 /* ============================================================ MAP */
 function initMap() {
